@@ -2,6 +2,8 @@ package com.query.executor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -30,13 +32,14 @@ public class JpaQueryExecutorImpl implements JpaQueryExecutor {
 	private EntityManager em;
 
 	public JpaQueryExecutorImpl() {
-		System.out.println("creating ");
 	}
 
 	@Override
 	public <T> List<T> getResultList(Query<T> query) {
 
-		javax.persistence.Query q = em.createNativeQuery(query.getName());
+		javax.persistence.Query q = query.getQuery(em);
+		q = applyParans(query, q);
+
 		List<?> resultList = q.getResultList();
 
 		List<T> returnList = new ArrayList<>();
@@ -51,22 +54,36 @@ public class JpaQueryExecutorImpl implements JpaQueryExecutor {
 				returnList.add(dto);
 			}
 		}
-
 		return returnList;
-
 	}
 
 	@Override
-	public <T> T getSingleResult(Query<T> query) {
+	public <T> Optional<T> getSingleResult(Query<T> query) {
 
-		javax.persistence.Query q = em.createNativeQuery(query.getName());
+		javax.persistence.Query q = query.getQuery(em);
+		q = applyParans(query, q);
 		Object result = q.getSingleResult();
 		if (result instanceof Object[]) {
 			Object[] row = (Object[]) result;
-			return query.getResultSet().mapRow(new RowResultImpl(row));
+			return Optional.ofNullable(query.getResultSet().mapRow(new RowResultImpl(row)));
 		} else {
-			return query.getResultSet().mapRow(new RowResultImpl(result));
+			return Optional.ofNullable(query.getResultSet().mapRow(new RowResultImpl(result)));
 		}
 	}
 
+	/**
+	 * apply paramns
+	 * 
+	 * @param query {@link Query}
+	 * @param q {@link javax.persistence.Query}
+	 * @return
+	 */
+	private <T> javax.persistence.Query applyParans(Query<T> query, javax.persistence.Query q) {
+		if (query.getParams() != null) {
+			for (Entry<String, Object> param : query.getParams().entrySet()) {
+				q = q.setParameter(param.getKey(), param.getValue());
+			}
+		}
+		return q;
+	}
 }

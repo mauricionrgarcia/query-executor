@@ -1,10 +1,12 @@
 package com.query.nativequery;
 
+import javax.persistence.EntityManager;
+
 import com.query.query.Query;
 import com.query.resultset.ResultSet;
 
 /**
- * {@link Query} to execute named native queries
+ * {@link Query} to execute native queries
  * 
  * @author <a href="mailto:mauricionrgarcia@gmail.com">Mauricio</a>
  * @version
@@ -16,12 +18,15 @@ public class JpaNativeQuery<T> extends Query<T> {
 	/**
 	 * Contructos with args:
 	 * 
-	 * @param name name / sql query
+	 * @param sql sql query
 	 * @param resultSet {@link ResultSet}
 	 * @param resultClass return type
 	 */
-	public JpaNativeQuery(String name, ResultSet<T> resultSet, Class<T> resultClass) {
-		super(name, resultSet, resultClass);
+	public JpaNativeQuery(String sql, ResultSet<T> resultSet, Class<T> resultClass) {
+		super(sql, resultSet, resultClass);
 	}
 
+	public javax.persistence.Query getQuery(EntityManager em) {
+		return em.createNativeQuery(super.getName());
+	}
 }

@@ -1,5 +1,9 @@
 package com.query.resultset;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 /**
  * Row result
  * 
@@ -24,5 +28,45 @@ public interface RowResult {
 	 * @return value as string
 	 */
 	String getString(Integer pos);
+
+	/**
+	 * ColumnResult
+	 * 
+	 * @param pos position of result sql
+	 * @return value as long
+	 */
+	Long getLong(Integer code);
+
+	/**
+	 * ColumnResult
+	 * 
+	 * @param pos position of result sql
+	 * @return value as interger
+	 */
+	Integer getInteger(Integer code);
+
+	/**
+	 * ColumnResult
+	 * 
+	 * @param pos position of result sql
+	 * @return value as BigDecimal
+	 */
+	BigDecimal getBigDecimal(Integer code);
+
+	/**
+	 * ColumnResult
+	 * 
+	 * @param pos position of result sql
+	 * @return value as LocalDate
+	 */
+	LocalDate getLocalDate(Integer code);
+
+	/**
+	 * ColumnResult
+	 * 
+	 * @param pos position of result sql
+	 * @return value as LocalDateTime
+	 */
+	LocalDateTime getLocalDateTime(Integer code);
 
 }

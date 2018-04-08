@@ -1,6 +1,7 @@
 package com.query.executor;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.query.query.Query;
 
@@ -28,6 +29,6 @@ public interface JpaQueryExecutor {
 	 * @param query implementation of {@link Query}
 	 * @return the result
 	 */
-	<T> T getSingleResult(Query<T> query);
+	<T> Optional<T> getSingleResult(Query<T> query);
 
 }
